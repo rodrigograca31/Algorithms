@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from functools import lru_cache
 import time
 import sys
 
@@ -28,6 +29,21 @@ def eating_cookies(n, cache=None):
     return total
 
 
+@lru_cache(maxsize=1000)
+def eating_cookies3(n):
+
+    if(n <= 1):
+        return 1
+    if(n == 2):
+        return 2
+
+    total = 2
+    for x in range(1, n-1):
+        total += eating_cookies(x) + eating_cookies(x-1)
+
+    return total
+
+
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         num_cookies = int(sys.argv[1])
@@ -36,7 +52,7 @@ if __name__ == "__main__":
     else:
         print('Usage: eating_cookies.py [num_cookies]')
 
-times = 50000
+times = 500000
 
 
 start = time.time()
@@ -49,5 +65,7 @@ for x in range(times):
     (eating_cookies(10, [0 for i in range(51)]))
 print("Imp 2: \t%.8f" % float(time.time() - start))
 
-print(eating_cookies(500, [0 for i in range(
-    501)]))
+start = time.time()
+for x in range(times):
+    (eating_cookies3(10))
+print("LRU 3: \t%.8f" % float(time.time() - start))
